@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+
+{% block heading %}
+    Search for Books Page
+{% endblock %}
+
+{% block card %}
+    <button><a href="{{ url_for('viewUserInfo') }}">UserInfo</a></button>
+    <button><a href="{{ url_for('logout') }}">Logout</a></button>
+{% endblock %}
+
+{% block body %}
+    <form class="userForm">
+        <div class="form-row align-items-center">
+            <div class="col-md-2">
+                <p>ISBN: </p>            
+            </div>
+            <div class="col-md-10">
+                <form action="{{ url_for('searchBooks') }}" method="post">
+                    <input type="text" name="isbn" placeholder="Enter ISBN" required>            
+            </div>
+        </div>
+        <div class="form-row align-items-center">
+            <div class="col-md-2">
+                <p">Book Title: </p>            
+            </div>
+            <div class="col-md-10">
+                <form action="{{ url_for('searchBooks') }}" method="post">
+                    <input type="text" name="title" placeholder="Enter Title" required>   
+            </div>
+        </div>
+        <div class="form-row align-items-center">
+            <div class="col-md-2">
+                <p>Book Author: </p>            
+            </div>
+            <div class="col-md-10">
+                <form action="{{ url_for('searchBooks') }}" method="post">
+                    <input type="text" name="author" placeholder="Enter Author" required>   
+            </div>
+        </div>
+        <div class="form-row align-items-center">
+            <div class="col-md-6">
+                <button><a href="{{ url_for('findBooks') }}">Find Book Now</a></button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

@@ -1,0 +1,45 @@
+@media (min-width: 500px) {
+    h1::after {
+      content: "to Read and Review ";
+    }
+}
+
+h1, h2, h3 {
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+}
+
+h1{
+    font-size: 28px;
+    color: blue;
+    margin-left: 20px;
+}
+
+h2 {
+    font-size: 18px;
+    margin-left: 40px;
+    margin-top: 40px;
+}
+
+h3 {
+    font-size: 18px;
+    color: blue;
+}
+
+.block-card {
+    text-align: right;
+    margin: 20px;
+    font-size: 18px;
+}
+
+.userForm {
+    margin-top: 20px;
+    margin-left: 60px;
+}
+
+.userForm > div {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    padding: 5px;
+    text-align: left;
+}

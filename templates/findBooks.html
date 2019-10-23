@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% block heading %}
+    Show Found Books Page
+{% endblock %}
+
+{% block card %}
+    <button><a href="{{ url_for('viewUserInfo') }}">UserInfo</a></button>
+    <button><a href="{{ url_for('logout') }}">Logout</a></button>
+{% endblock %}
+
+{% block body %}
+    
+        {% if ISBN in Books[0] %}
+            <form class="userForm">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
+                    <label class="form-check-label" for="exampleRadios1">
+                    {{ Books[1] }}
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
+                    <label class="form-check-label" for="exampleRadios2">
+                    Second default radio
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" value="option3">
+                    <label class="form-check-label" for="exampleRadios3">
+                    Disabled radio
+                    </label>
+                </div>
+                <div class="form-check">
+                    <button><a href="{{ url_for('viewBookInfo') }}">View Selected Book Now</a></button>
+                </div>
+            </form>
+        {% endif %}
+    
+{% endblock %}
