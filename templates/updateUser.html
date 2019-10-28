@@ -4,14 +4,19 @@
     Sign up here to Read and Review Exciting Books!
 {% endblock %}
 
+{% block card %}
+    <button><a href="{{ url_for('logout') }}">Logout</a></button>
+{% endblock %}
+
 {% block body %}
-    <form action="{{ url_for('registration') }}" method="post">
+    <form action="{{ url_for('updateUser') }}" method="post">
+    
         <div class="form-row align-items-start">
             <div class="col-md-2">
                 <p>First Name: </p>            
             </div>
             <div class="col-md-10">
-                <input type="text" name="first" placeholder="First Name" required>            
+                <input type="text" name="first" placeholder="{{ user.first }}">            
             </div>
         </div>
         <div class="form-row align-items-start">
@@ -19,7 +24,7 @@
                 <p">Last Name: </p>            
             </div>
             <div class="col-md-10">
-                <input type="text" name="last" placeholder="Last Name" required>   
+                <input type="text" name="last" placeholder="{{ user.last }}">   
             </div>
         </div>        
         <div class="form-row align-items-start">
@@ -27,23 +32,23 @@
                 <p>Username: </p>            
             </div>
             <div class="col-md-10">
-                <input type="text" name="username" placeholder="Username" required>            
+                <input type="text" name="username" placeholder="{{ user.username }}" readonly>            
             </div>
         </div>
         <div class="form-row align-items-start">
             <div class="col-md-2">
                 <p>Password: </p>            
             </div>
-            <div class="col-md-10">
-                <input type="password" name="password" placeholder="Password" required>   
+            <div class="col-md-6">
+                <input type="password" name="password" placeholder="{{ user.password }}">   
             </div>
         </div>
         <div class="form-row align-items-start">
             <div class="col-md-2">
-                <button>Register Now</button>
+                <button>Update Now</button>
             </div>
             <div class="col-md-10">
-                <p>Already Registered? <a href="{{ url_for('login') }}">Login Here</a></p>
+                <p>Already Registered? <a href="{{ url_for('viewUserInfo') }}">Go Back (cancel)</a></p>
             </div>
         </div>
     </form>

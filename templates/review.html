@@ -10,38 +10,50 @@
 {% endblock %}
 
 {% block body %}
-    <form class="userForm">
-        {% if ISBN in Review[3] %}
-            <div class="form-row align-items-center">
-                <div class="col-md-6">
-                    <p>
-                        ISBN: {{ Review[3] }}
-                    </p>            
+    <form accept-charset="UTF-8" action="{{ url_for('review', book_id=bookid) }}" method="post">
+        <div class="form-row align-items-start">
+            <div class="col-md-12">
+                <p>
+                    Please give the book a rating and leave your comments below:
+                </p>            
+            </div>
+        </div>
+        <div class="form-row align-items-start">
+            <div class="col-md-2">
+                <p>Rating: </p>            
+            </div>
+            <div class="col-md-3">
+                <p>Select Rating (1 - 5)</p>   
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <select class="form-control" name="rating">
+                        {% for i in ratings %}
+                            {% if loop.first %}
+                                <option value="{{ loop.index }}" selected>{{ loop.index }}: {{ i }}</option>
+                            {% else %}
+                                <option value="{{ loop.index }}">{{ loop.index }}: {{ i }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
                 </div>
             </div>
-            <div class="form-row align-items-center">
-                <div class="col-md-2">
-                    <p>Rating: </p>            
-                </div>
-                <div class="col-md-10">
-                    <form action="{{ url_for('review') }}" method="post">
-                        <input type="text" name="rating" placeholder="Enter Rating Here" required>   
-                </div>
-            </div>
-            <div class="form-row align-items-center">
-                <div class="col-md-2">
-                    <p>Comment: </p>            
-                </div>
-                <div class="col-md-10">
-                    <form action="{{ url_for('review') }}" method="post">
-                        <input type="text" name="comment" placeholder="Enter Comments Here" required>   
+        </div>
+        <div class="form-row align-items-start">
+            <div class="col-md-10">
+                <div class="form-group">
+                    <label for="comment">Comments (limit 300 characters)</label>
+                    <textarea class="form-control" maxlength=300 rows="5" id="comment" name="comment"></textarea>
                 </div>
             </div>
-            <div class="form-row align-items-center">
-                <div class="col-md-6">
-                    <button><a href="{{ url_for('viewBookInfo') }}">View Book Now</a></button>
-                </div>
+        </div>
+        <div class="form-row align-items-start">
+            <div class="col-md-3">
+                <button>Submit Comment Now</a></button>
             </div>
-            {% endif %}
+            <div class="col-md-3">
+                <a href="{{ url_for('reviewBook', book_id=bookid) }}">Go Back (cancel)</a>
+            </div>
+        </div>
     </form>
 {% endblock %}

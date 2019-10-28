@@ -10,39 +10,47 @@
 
 {% block body %}
     <form class="userForm">
-        <div class="form-row align-items-center">
+        <div class="form-row align-items-start">
             <div class="col-md-2">
-                <p>First Name: </p>            
+                <p class="label">User ID: </p>            
             </div>
             <div class="col-md-10">
-                {{ Users[2] }}         
+                {{ user.userid }}
+            </div>
+        </div>    
+        <div class="form-row align-items-start">
+            <div class="col-md-2">
+                <p class="label">First Name: </p>            
+            </div>
+            <div class="col-md-4">
+                {{ user.first }}         
+            </div>
+            <div class="col-md-2">
+                <p class="label">Last Name: </p>            
+            </div>
+            <div class="col-md-4">
+                {{ user.last }}
+            </div>       
+        </div>
+    
+        <div class="form-row align-items-start">
+            <div class="col-md-2">
+                <p class="label">Username: </p>            
+            </div>
+            <div class="col-md-4">
+                {{ user.username }}
+            </div>
+            <div class="col-md-2">
+                <p class="label">Password: </p>            
+            </div>
+            <div class="col-md-4">
+                {{ user.password }}      
             </div>
         </div>
-        <div class="form-row align-items-center">
-            <div class="col-md-2">
-                <p>Last Name: </p>            
+        <div class="form-row align-items-start">
+            <div class="col-md-6">
+                <button><a href="{{ url_for('updateUser') }}">Update User Info</a></button>
             </div>
-            <div class="col-md-10">
-                {{ Users[3] }}
-            </div>
-        </div>        
-        <div class="form-row align-items-center">
-            <div class="col-md-2">
-                <p>Username: </p>            
-            </div>
-            <div class="col-md-10">
-                {{ Users[0] }}
-            </div>
-        </div>
-        <div class="form-row align-items-center">
-            <div class="col-md-2">
-                <p>Password: </p>            
-            </div>
-            <div class="col-md-10">
-                {{ Users[1] }}      
-            </div>
-        </div>
-        <div class="form-row align-items-center">
             <div class="col-md-6">
                 <button><a href="{{ url_for('searchBooks') }}">Search for Book Here</a></button>
             </div>

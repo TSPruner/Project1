@@ -19,6 +19,7 @@ h2 {
     font-size: 18px;
     margin-left: 40px;
     margin-top: 40px;
+    margin-bottom: 40px;
 }
 
 h3 {
@@ -32,14 +33,22 @@ h3 {
     font-size: 18px;
 }
 
-.userForm {
+.container {
     margin-top: 20px;
     margin-left: 60px;
 }
 
-.userForm > div {
+.form-row {
     font-family: Arial, sans-serif;
     font-size: 16px;
-    padding: 5px;
+    margin-top: 10px;
     text-align: left;
+}
+
+.label {
+    color: blue;
+}
+
+.form-check {
+    margin-bottom: 20px;
 }
