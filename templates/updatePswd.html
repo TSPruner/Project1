@@ -9,34 +9,33 @@
 {% endblock %}
 
 {% block body %}
-    <form action="{{ url_for('updateUser') }}" method="post">
+    <form action="{{ url_for('updatePswd') }}" method="post">
         <div class="form-row align-items-start">
             <div class="col-md-2">
-                <p>Username: </p>            
+                <p class="label">Username: </p>            
             </div>
-            <div class="col-md-10">
-                <input type="text" name="username" placeholder="{{ user.username }}" readonly>            
+            <div class="col-md-4">
+                {{ user.username }}
             </div>
         </div>
         <div class="form-row align-items-start">
             <div class="col-md-2">
-                <p>First Name: </p>            
-            </div>
-            <div class="col-md-10">
-                <input type="text" name="first" placeholder="{{ user.first }}">            
+                <p class="label">Reset Password: </p>            
             </div>
         </div>
-        <div class="form-row align-items-start">
-            <div class="col-md-2">
-                <p">Last Name: </p>            
-            </div>
-            <div class="col-md-10">
-                <input type="text" name="last" placeholder="{{ user.last }}">   
-            </div>
-        </div>        
-        <div class="form-row align-items-start">
+        <div class="form-row align-items-start">        
             <div class="col-md-3">
-                <button><a href="{{ url_for('updatePswd') }}">View/Update Password</a></button>
+                <input type="password" name="oldPassword" placeholder="oldPassword" required>   
+            </div>
+        </div>
+        <div class="form-row align-items-start">        
+            <div class="col-md-3">
+                <input type="password" name="newPassword1" placeholder="newPassword1" required>   
+            </div>
+        </div>
+        <div class="form-row align-items-start">        
+            <div class="col-md-3">
+                <input type="password" name="newPassword2" placeholder="newPassword2" required>   
             </div>
         </div>
         <div class="form-row align-items-start">

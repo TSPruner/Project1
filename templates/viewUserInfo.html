@@ -14,25 +14,16 @@
             <div class="col-md-2">
                 <p class="label">User ID: </p>            
             </div>
-            <div class="col-md-10">
+            <div class="col-md-4">
                 {{ user.userid }}
             </div>
-        </div>    
-        <div class="form-row align-items-start">
             <div class="col-md-2">
                 <p class="label">First Name: </p>            
             </div>
             <div class="col-md-4">
-                {{ user.first }}         
+                {{ user.first }}    
             </div>
-            <div class="col-md-2">
-                <p class="label">Last Name: </p>            
-            </div>
-            <div class="col-md-4">
-                {{ user.last }}
-            </div>       
-        </div>
-    
+        </div>    
         <div class="form-row align-items-start">
             <div class="col-md-2">
                 <p class="label">Username: </p>            
@@ -41,15 +32,18 @@
                 {{ user.username }}
             </div>
             <div class="col-md-2">
-                <p class="label">Password: </p>            
+                <p class="label">Last Name: </p>            
             </div>
             <div class="col-md-4">
-                {{ user.password }}      
-            </div>
+                {{ user.last }}
+            </div>       
         </div>
         <div class="form-row align-items-start">
-            <div class="col-md-6">
-                <button><a href="{{ url_for('updateUser') }}">Update User Info</a></button>
+            <div class="col-md-3">
+                <button><a href="{{ url_for('updatePswd') }}">View/Update Password</a></button>
+            </div>
+            <div class="col-md-3">
+                <button><a href="{{ url_for('updateUser') }}">Update Other Info</a></button>
             </div>
             <div class="col-md-6">
                 <button><a href="{{ url_for('searchBooks') }}">Search for Book Here</a></button>

@@ -1,7 +1,7 @@
 import os
 import requests
 
-from flask import Flask, session, render_template, request
+from flask import Flask, session, render_template, jsonify, request
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -38,7 +38,6 @@ def login():
         print(f"login POST username { username }")
         print(f"login POST password { password }")        
         # Make sure the user exists.
-        users = db.execute("SELECT * FROM users WHERE username = :username", {"username": username})
         existingUsers = db.execute("SELECT * FROM users WHERE username = :username",
                             {"username": username})
         row = existingUsers.fetchone()
@@ -50,8 +49,8 @@ def login():
         if row.password == password:
             session["key"] = row.userid
             print(f"row { row.userid }")
-            print(f"login call viewUserInfo")
-            return render_template("viewUserInfo.html", user=row)
+            print(f"login call searchBooks")
+            return render_template("searchBooks.html")
         else:
             print(f"login call errorLogin")
             return render_template("errorLogin.html", message="Password is incorrect, please register.")
@@ -114,7 +113,6 @@ def updateUser():
 
         firstname = (request.form.get("first"))
         lastname = (request.form.get("last"))
-        pswd = (request.form.get("password"))
 
         # Update the user info.
         if (len(firstname) > 0): 
@@ -123,9 +121,6 @@ def updateUser():
         if (len(lastname) > 0):    
             db.execute("UPDATE users SET last = :last WHERE userid = :id",
                         {"last": lastname, "id": session["key"]})
-        if (len(pswd) > 0): 
-            db.execute("UPDATE users SET password = :pswd WHERE userid = :id",
-                       {"pswd": pswd, "id": session["key"]})
         existingUsers = db.execute("SELECT * FROM users WHERE userid = :id",
                         {"id": session["key"]})
         row = existingUsers.fetchone()
@@ -139,6 +134,63 @@ def updateUser():
                         {"id": session["key"]})
         row = existingUsers.fetchone()
         return render_template("updateUser.html", user=row)
+
+@app.route("/updatePswd", methods=["GET", "POST"])
+def updatePswd():
+    print(f"updatePswd")
+    if request.method == "POST":
+        print(f"updatePswd POST")
+
+        oldpswd = (request.form.get("oldPassword"))
+        newPassword1 = (request.form.get("newPassword1"))
+        newPassword2 = (request.form.get("newPassword2"))
+
+        # Check the old password info.
+        if (len(oldpswd) > 0):
+            existingUsers = db.execute("SELECT * FROM users WHERE userid = :id",
+                            {"id": session["key"]})
+            row = existingUsers.fetchone()
+            if row is None:
+                print(f"user not found")
+                return render_template("errorUser.html", message="Password update failed, please try again")
+
+            # Check the new password info.
+            if row.password == oldpswd:
+                if (len(newPassword1) > 0) and (len(newPassword2) > 0): 
+                    if newPassword1 == newPassword2:
+                        db.execute("UPDATE users SET password = :pswd WHERE userid = :id",
+                                {"pswd": newPassword1, "id": session["key"]})
+                        db.commit()
+
+                        print(f"updatePswd.html call success")
+                        return render_template("successUpdate.html")
+                    else:
+                        print(f"new passwords do not match")
+                        return render_template("errorUser.html", message="New passwords do not match, please try again")
+                else:
+                    print(f"updatePswd.html call error")
+                    return render_template("errorUser.html", message="Password update failed, please try again")
+
+            print(f"old password is incorrect")
+            return render_template("errorUser.html", message="Old password is incorrect, please try again.")
+
+        print(f"updatePswd.html call error")
+        return render_template("errorUser.html", message="Password update failed, please try again")
+
+    else:
+        print(f"updatePswd GET")
+
+        # Make sure the user is found.
+        existingUsers = db.execute("SELECT * FROM users WHERE userid = :id",
+                        {"id": session["key"]})
+        row = existingUsers.fetchone()
+
+        if row is None:
+            print(f"user not found")
+            return render_template("errorUser.html", message="User not found, please try again")
+
+        print(f"login call updatePswd.html")
+        return render_template("updatePswd.html", user=row)
 
 @app.route("/searchBooks", methods=["GET", "POST"])
 def searchBooks():
@@ -303,3 +355,44 @@ def review(book_id):
 def logout():
     session["key"] = None
     return render_template("successLogout.html")
+
+@app.route("/api/excitingread/<book_isbn>")
+def excitingread_api(book_isbn):
+    print(f"excitingread_api")
+
+    # Make sure book exists.
+    bookFound = db.execute("SELECT * FROM books WHERE isbn = :isbn", 
+                    {"isbn": book_isbn})
+    row = bookFound.fetchone()
+
+    print(f"row: {row} and isbn = {book_isbn}")
+    if row is None:
+        print(f"invalid bookisbn")
+        return jsonify({"error": "Invalid bookisbn"}), 422
+
+    print(f"isbn valid")
+
+    # Get goodreads info.
+    res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "QKLXBkeDmu9T5wQluz9LTA", "isbns": book_isbn})
+    if res.status_code != 200:
+        avgRating = 0
+        countRating = 0
+    else:
+        data = res.json()
+        print(f"data = { data }")
+        bookdata = data["books"]
+        countRating = bookdata[0]["work_ratings_count"]
+        avgRating = bookdata[0]["average_rating"]
+    
+    print(f"bookisbn review info: { countRating } and { avgRating }")
+
+    #Return details about an excitingRead book.
+    return jsonify({
+            "title": row.title,
+            "author": row.author,
+            "year": row.year,
+            "isbn": row.isbn,
+            "review_count": countRating,
+            "average_score": avgRating
+        })
+

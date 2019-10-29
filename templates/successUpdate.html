@@ -1,7 +1,6 @@
 {% extends "layout.html" %}
 
 {% block card %}
-    <button><a href="{{ url_for('viewUserInfo') }}">UserInfo</a></button>
     <button><a href="{{ url_for('logout') }}">Logout</a></button>
 {% endblock %}
 
@@ -11,12 +10,15 @@
     </div>
 
     <div class="alert alert-success" role="alert">
-        <strong>You have successfully submitted your review for one of our Exciting Books!</strong>
+        <strong>You have successfully updated your password!</strong>
     </div>
 
     <div class="form-row align-items-start">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <button><a href="{{ url_for('searchBooks') }}">Search for Book Here</a></button>
+        </div>
+        <div class="col-md-3">
+            <button><a href="{{ url_for('viewUserInfo') }}">Go Back to User Info Page</a></button>
         </div>
     </div>
 {% endblock %}
