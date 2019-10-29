@@ -23,41 +23,32 @@ db = scoped_session(sessionmaker(bind=engine))
 
 @app.route("/", methods=["GET", "POST"])
 def login():
-    print(f"login")
     if request.method == "POST":
         try:
             username = (request.form.get("username"))
         except ValueError:
-            return render_template("error.html", message="Invalid or blank username.")
+            return render_template("errorLogin.html", message="Invalid or blank username.")
 
         try:
             password = (request.form.get("password"))
         except ValueError:
-            return render_template("error.html", message="Invalid or blank password.")
-
-        print(f"login POST username { username }")
-        print(f"login POST password { password }")        
+            return render_template("errorLogin.html", message="Invalid or blank password.")
+      
         # Make sure the user exists.
         existingUsers = db.execute("SELECT * FROM users WHERE username = :username",
                             {"username": username})
         row = existingUsers.fetchone()
 
         if row is None:
-            print(f"user does not exist")
             return render_template("errorLogin.html", message="User does not exist, please register.")
 
         if row.password == password:
             session["key"] = row.userid
-            print(f"row { row.userid }")
-            print(f"login call searchBooks")
             return render_template("searchBooks.html")
         else:
-            print(f"login call errorLogin")
             return render_template("errorLogin.html", message="Password is incorrect, please register.")
-        print(f"why here?")
 
     else:
-        print(f"login GET")
         return render_template("login.html")
 
 @app.route("/registration", methods=["GET", "POST"])
@@ -70,12 +61,12 @@ def registration():
         try:
             name = (request.form.get("username"))
         except ValueError:
-            return render_template("error.html", message="Invalid or blank username.")
+            return render_template("errorLogin.html", message="Invalid or blank username.")
 
         try:
             pswd = (request.form.get("password"))
         except ValueError:
-            return render_template("error.html", message="Invalid or blank password.")
+            return render_template("errorLogin.html", message="Invalid or blank password.")
         
         # Make sure the user does not exist.
         users = db.execute("SELECT * FROM users WHERE username = :username", {"username": name})
@@ -101,15 +92,12 @@ def viewUserInfo():
     existingUser = db.execute("SELECT * FROM users WHERE userid = :id",
                         {"id": session["key"]})
     row = existingUser.fetchone()
-
-    print(f"call viewUserInfo")    
+ 
     return render_template("viewUserInfo.html", user=row)       
 
 @app.route("/updateUser", methods=["GET", "POST"])
 def updateUser():
-    print(f"updateUser")
     if request.method == "POST":
-        print(f"updateUser POST")
 
         firstname = (request.form.get("first"))
         lastname = (request.form.get("last"))
@@ -129,7 +117,6 @@ def updateUser():
         return render_template("viewUserInfo.html", user=row)
 
     else:
-        print(f"updateUser GET")
         existingUsers = db.execute("SELECT * FROM users WHERE userid = :id",
                         {"id": session["key"]})
         row = existingUsers.fetchone()
@@ -137,9 +124,7 @@ def updateUser():
 
 @app.route("/updatePswd", methods=["GET", "POST"])
 def updatePswd():
-    print(f"updatePswd")
     if request.method == "POST":
-        print(f"updatePswd POST")
 
         oldpswd = (request.form.get("oldPassword"))
         newPassword1 = (request.form.get("newPassword1"))
@@ -151,7 +136,6 @@ def updatePswd():
                             {"id": session["key"]})
             row = existingUsers.fetchone()
             if row is None:
-                print(f"user not found")
                 return render_template("errorUser.html", message="Password update failed, please try again")
 
             # Check the new password info.
@@ -162,41 +146,30 @@ def updatePswd():
                                 {"pswd": newPassword1, "id": session["key"]})
                         db.commit()
 
-                        print(f"updatePswd.html call success")
                         return render_template("successUpdate.html")
                     else:
-                        print(f"new passwords do not match")
                         return render_template("errorUser.html", message="New passwords do not match, please try again")
                 else:
-                    print(f"updatePswd.html call error")
                     return render_template("errorUser.html", message="Password update failed, please try again")
 
-            print(f"old password is incorrect")
             return render_template("errorUser.html", message="Old password is incorrect, please try again.")
 
-        print(f"updatePswd.html call error")
         return render_template("errorUser.html", message="Password update failed, please try again")
 
     else:
-        print(f"updatePswd GET")
-
         # Make sure the user is found.
         existingUsers = db.execute("SELECT * FROM users WHERE userid = :id",
                         {"id": session["key"]})
         row = existingUsers.fetchone()
 
         if row is None:
-            print(f"user not found")
             return render_template("errorUser.html", message="User not found, please try again")
 
-        print(f"login call updatePswd.html")
         return render_template("updatePswd.html", user=row)
 
 @app.route("/searchBooks", methods=["GET", "POST"])
 def searchBooks():
-    print(f"searchBooks")
     if request.method == "POST":
-        print(f"searchBooks POST")
 
         isbn = (request.form.get("isbn"))
         title = (request.form.get("title"))
@@ -240,23 +213,19 @@ def searchBooks():
 
         # Make sure books are found.
         if (len(foundBooks) > 0):
-            print(f"searchBooks call findBooks")
             return render_template("findBooks.html", books=foundBooks)
         else:
             return render_template("errorBooks.html", message="No books found, please try again.")
 
     else:
-        print(f"searchBooks GET")
         return render_template("searchBooks.html")
 
 @app.route("/findBooks", methods=["POST"])
 def findBooks():
-    print(f"findBooks")
-
     try:
         bookID = int(request.form.get("bookChoice"))
     except ValueError:
-        return render_template("error.html", message="Invalid selection.") 
+        return render_template("errorBook.html", message="Invalid selection.") 
 
     # Get book info.
     bookSelected = db.execute("SELECT * FROM books WHERE bookid = :id",
@@ -264,7 +233,7 @@ def findBooks():
     bookRow = bookSelected.fetchone()
 
     # Make sure books are found.
-    if (len(bookRow) <= 0):
+    if bookRow is None:
         db.commit()
         return render_template("errorBooks.html", message="No books found, please try again.")
 
@@ -274,10 +243,9 @@ def findBooks():
     reviews = reviewSelected.fetchall()
     userList = []
     goodreadList = []
-    print(f"review = {reviews}")
 
     # Make sure reviews are found.
-    if (len(reviews) > 0):
+    if reviews is not None:
         for row in reviews:
             # Get user's name for review.
             userInfo = db.execute("SELECT * FROM users WHERE userid = :id",
@@ -285,11 +253,8 @@ def findBooks():
             user = userInfo.fetchone()
 
             # Make sure user is found.
-            if user is None:
-                print("No user found")
-                return 
-
-            userList.append(user)
+            if user is not None:
+                userList.append(user)
 
     res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "QKLXBkeDmu9T5wQluz9LTA", "isbns": bookRow.isbn})
 
@@ -297,50 +262,40 @@ def findBooks():
         goodreadList.append("No goodread review info available at this time.")
     else:
         data = res.json()
-        print(f"data = { data }")
         bookdata = data["books"]
         countRating = bookdata[0]["work_ratings_count"]
         avgRating = bookdata[0]["average_rating"]
         goodreadList.append(f"This book received { countRating } reviews and has an average rating of { avgRating } out of 5.")
     
-    print(f"findbooks call viewBookInfo { goodreadList[0] }")
     return render_template("viewBookInfo.html", book=bookRow, reviews=reviews, users=userList, goodreads=goodreadList)
 
 @app.route("/findBooks/<int:book_id>")
 def reviewBook(book_id):
-    print(f"reviewBook")
     userid = session["key"]
 
     reviewFound = db.execute("SELECT * FROM reviews WHERE userid = :userid AND bookid = :bookid",
             {"userid": userid, "bookid": book_id})
     review = reviewFound.fetchone()
 
-    print(f"review = {review}")
     if review is not None:
-        print(f"reviews not empty")
         return render_template("errorBooks.html", message="Book has already been reviewed by user. Please find another book to review.")
 
-    print(f"reviews empty")
     ratings = ["Bad", "Alright", "Good", "Great", "Amazing"]
     return render_template("review.html", bookid=book_id, ratings=ratings)
 
 @app.route("/review/<int:book_id>", methods=["POST"])
 def review(book_id):
-    print(f"review POST")
     userid = session["key"]
 
     try:
         rating = request.form.get("rating")
     except ValueError:
-        return render_template("error.html", message="Invalid or blank rating.")        
+        return render_template("errorBook.html", message="Invalid or blank rating.")        
 
     try:
         comment = request.form.get("comment")
     except ValueError:
-        return render_template("error.html", message="Invalid or blank comment.")        
-
-    print(f"rating: {rating}")
-    print(f"comment: {comment}")
+        return render_template("errorBook.html", message="Invalid or blank comment.")        
 
     # Save the review.
     if (len(comment) > 0): 
@@ -348,7 +303,6 @@ def review(book_id):
             {"rating": rating, "comment": comment, "bookid": book_id, "userid": userid})
         db.commit()
 
-    print(f"reviews")
     return render_template("successReview.html")
 
 @app.route("/logout")
