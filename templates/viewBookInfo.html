@@ -53,11 +53,11 @@
         <div class="form-row align-items-start">
             <div class="col-md-6">
                 <h3>
-                    Reviews for this Book:
+                    ExcitingBooks site User Reviews:
                 </h3>            
             </div>
         </div>
-        <fieldset class="form-group">
+        <fieldset class="form-book">
             <div class="form-row align-items-start">
                 {% if reviews %}
                     {% for review in reviews %}
@@ -78,6 +78,23 @@
                 {% endif %}
             </div>
         </fieldset>         
+        <div class="form-row align-items-start">
+            <div class="col-xl-9">
+                <img src="https://scontent.fewr1-6.fna.fbcdn.net/v/t1.0-9/417027_10150734457702028_1843042659_n.jpg?_nc_cat=103&_nc_oc=AQkrLy_mEhivawSK3GsgBThCPMCF2US6sTkKbvbeGKYSnO8DhTqPox4J_WIcy-Ik4bOzRzARxNlF11JYcpuFzgwv&_nc_ht=scontent.fewr1-6.fna&oh=2666da752dde6819a4a3d8ab7bcd10ac&oe=5E18DCF8" width="250" height="80">   
+            </div>
+        </div>
+        <div class="form-row align-items-start">
+            <div class="col-md-6">
+                <h4>
+                    Goodreads.com Review Info:
+                </h4>            
+            </div>
+        </div>
+        <fieldset class="form-book">
+            <div class="form-row align-items-start">
+                <div class="col-md-10">{{ goodreads[0] }}</div>
+            </div>
+        </fieldset>   
         <div class="form-row align-items-start">
             <div class="col-md-2">
                 <button><a href="{{ url_for('reviewBook', book_id=book.bookid) }}">Add Book Review</a></button>

@@ -7,8 +7,19 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <p class="block-card">{% block card %}{% endblock %}</p>    
-
+        <div class="card mb-3" style="max-width: 1620px;">
+            <div class="row no-gutters">
+                <div class="col-xl-9">
+                    <img src="{{ url_for('static', filename='book.jpeg') }}" width="300" height="100">
+                </div>
+                <div class="col-xl-3">
+                    <div class="card-body">
+                        <p class="block-card">{% block card %}{% endblock %}</p>  
+                    </div>
+                </div>
+            </div>
+        </div>    
+        
         <h1>Exciting Books </h1>
 
         <h2>{% block heading %}{% endblock %}</h2>

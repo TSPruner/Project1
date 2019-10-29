@@ -4,7 +4,7 @@
     }
 }
 
-h1, h2, h3 {
+h1, h2, h3, h4 {
     font-family: Arial, sans-serif;
     font-weight: bold;
 }
@@ -25,11 +25,15 @@ h2 {
 h3 {
     font-size: 18px;
     color: blue;
+    margin-top: 10px;
+}
+
+h4 {
+    font-size: 18px;
 }
 
 .block-card {
     text-align: right;
-    margin: 20px;
     font-size: 18px;
 }
 
@@ -51,4 +55,9 @@ h3 {
 
 .form-check {
     margin-bottom: 20px;
+}
+
+.form-book {
+    margin-bottom: 40px;
+    margin-top: 10px;
 }

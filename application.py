@@ -1,7 +1,5 @@
 import os
 import requests
-res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "QKLXBkeDmu9T5wQluz9LTA", "isbns": "9781632168146"})
-print(res.json())
 
 from flask import Flask, session, render_template, request
 from flask_session import Session
@@ -161,13 +159,11 @@ def searchBooks():
                                     "(author LIKE :author OR upper(title) LIKE :author OR lower(author) LIKE :author)",
                                     {"isbn": "%" + isbn + "%", "title": "%" + title + "%", "author": "%" + author + "%"})
                     foundBooks = results.fetchall()
-                    db.commit()
                 else:
                     results = db.execute("SELECT * FROM books WHERE isbn LIKE :isbn AND "
                                     "(title LIKE :title OR upper(title) LIKE :title OR lower(title) LIKE :title)",
                                     {"isbn": "%" + isbn + "%", "title": "%" + title + "%"})
                     foundBooks = results.fetchall()
-                    db.commit() 
             else:
                 results = db.execute("SELECT * FROM books WHERE isbn LIKE :isbn",
                                 {"isbn": "%" + isbn + "%"})
@@ -225,6 +221,7 @@ def findBooks():
                     {"id": bookID})
     reviews = reviewSelected.fetchall()
     userList = []
+    goodreadList = []
     print(f"review = {reviews}")
 
     # Make sure reviews are found.
@@ -242,13 +239,20 @@ def findBooks():
 
             userList.append(user)
 
-    print(f"findbooks call viewBookInfo")
-    return render_template("viewBookInfo.html", book=bookRow, reviews=reviews, users=userList)
+    res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "QKLXBkeDmu9T5wQluz9LTA", "isbns": bookRow.isbn})
 
-@app.route("/viewBookInfo", methods=["GET", "POST"])
-def viewBookInfo():
-    print(f"viewBookInfo")
-    return render_template("viewBookInfo.html", book=bookRow, reviews=reviews, users=userList)
+    if res.status_code != 200:
+        goodreadList.append("No goodread review info available at this time.")
+    else:
+        data = res.json()
+        print(f"data = { data }")
+        bookdata = data["books"]
+        countRating = bookdata[0]["work_ratings_count"]
+        avgRating = bookdata[0]["average_rating"]
+        goodreadList.append(f"This book received { countRating } reviews and has an average rating of { avgRating } out of 5.")
+    
+    print(f"findbooks call viewBookInfo { goodreadList[0] }")
+    return render_template("viewBookInfo.html", book=bookRow, reviews=reviews, users=userList, goodreads=goodreadList)
 
 @app.route("/findBooks/<int:book_id>")
 def reviewBook(book_id):
